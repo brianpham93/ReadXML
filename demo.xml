@@ -1,10 +1,10 @@
 <note>
     <to> Tove</to>
+    <sds/>
     <from>Jani</from>
     <abc>
-        <def><abc/>
-        </def>
-    </abc>
+        </abc>
+        <ghi></ghi>
 
     <heading>Reminder</heading>
     <body>Don't forget me this weekend!</body>

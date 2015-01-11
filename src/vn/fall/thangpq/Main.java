@@ -15,38 +15,81 @@ public class Main {
 
         BufferedReader br = new BufferedReader(new FileReader("demo.xml"));
         Stack<String> stack = new Stack<String>();
+        String result = "";
         try {
-            StringBuilder sb = new StringBuilder();
+            //StringBuilder sb = new StringBuilder();
             String line = br.readLine();
 
+           mainLoop: while (line != null) {
+                while (true){
+                    String extractedTag = line.substring(line.indexOf("<"), line.indexOf(">" + 1));
+                    if (isOpenTag(extractedTag)){
+                        stack.add(extractedTag);
+                        line = line.replace(extractedTag,"");
+                        continue;
 
-            while (line != null) {
-
-                String result = "INVALID TAG" ;
-
-                if (isFullTag(line.trim())){
-                    result = TagType.FULL_TAG;
-                } else if (isEndTag(line.trim())){
-                    result = TagType.END_TAG;
-                } else if (isEmptyTag(line.trim())){
-                    result = TagType.EMPTY_TAG;
-                } else if (isOpenTag(line.trim())) {
-                    result = TagType.OPEN_TAG;
+                    } else if (isEndTag(extractedTag)){
+                        if (getTagName(extractedTag).equals(getTagName(stack.lastElement()))){
+                            stack.remove(stack.lastElement());
+                            line = line.replace(extractedTag,"");
+                            continue;
+                        } else {
+                            result = "Close tag doesn't match Open tag";
+                            break mainLoop;
+                        }
+                    }
                 }
-                sb.append(result);
-                sb.append(System.lineSeparator());
-                line = br.readLine();
+//                String tag = line.trim();
+//
+//                if ((line.startsWith("<?xml") && line.endsWith(">")) || line.isEmpty()){
+//                    line = br.readLine();
+//                    continue;
+//                }
+//
+//                if (isOpenTag(tag)){
+//                    stack.add(tag);
+//                    line = br.readLine();
+//                    continue;
+//
+//                } else if (isEndTag(tag)){
+//
+//                    if (getTagName(tag).equals(getTagName(stack.lastElement()))){
+//                        stack.remove(stack.lastElement());
+//                        line = br.readLine();
+//                        continue;
+//                    } else {
+//                        result = "The open tag and close tag do not match: " + stack.lastElement() + " and " + tag;
+//                    }
+//                } else if (isEmptyTag(tag)){
+//                    line = br.readLine();
+//                    continue;
+//                } else if (isFullTag(line)){
+//                    line = br.readLine();
+//                    continue;
+//                }
             }
-            String everything = sb.toString();
-            System.out.println(everything);
-
-
+            if (stack.empty()){
+                result = "Stack is empty";
+            }
+            System.out.println(result);
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             br.close();
         }
+    }
+
+    private static String getTagName(String tag) {
+        String tagName = "";
+        if (isOpenTag(tag)){
+            tagName = tag.replace("<", "").replace(">", "");
+        } else if (isEndTag(tag)){
+            tagName = tag.replace("</", "").replace(">", "");
+        } else if (isEmptyTag(tag)){
+            tagName = tag.replace("<", "").replace("/>", "");
+        }
+        return tagName;
     }
 
     public static boolean isOpenTag(String element){
@@ -56,8 +99,11 @@ public class Main {
             String tagName = element.replace("<", "").replace(">", "");
             if (isValidTagName(tagName)){
                 return true;
+            } else{
+
+                return false;
             }
-            return false;
+
         }
         return false;
     }
@@ -101,15 +147,16 @@ public class Main {
 
             String firstString = element.substring(element.indexOf('<'), element.indexOf('>') + 1);
             if (isOpenTag(firstString)){
-                openTagName = element.replace("<", "").replace(">", "");
+                openTagName = getTagName(firstString);
 
                 element = element.replace(firstString, "");
+
                 String secondString = element.substring(element.indexOf('<'), element.indexOf('>') + 1);
                 if (isEndTag(secondString)){
-                    closeTagName = element.replace("</", "").replace(">", "");
+                    closeTagName = getTagName(secondString);
                 }
 
-                if (isValidTagName(openTagName) && isValidTagName(closeTagName)){
+                if (isValidTagName(openTagName) && isValidTagName(closeTagName) && openTagName.equals(closeTagName)){
                     return true;
                 }
             }

@@ -1,6 +1,11 @@
-<species>
-    <human></human>
-    <fishes></fishes>
-    <trees></trees>
-    <abc/>
-</species>
+<note>
+    <to> Tove</to>
+    <from>Jani</from>
+    <abc>
+        <def><abc/>
+        </def>
+    </abc>
+
+    <heading>Reminder</heading>
+    <body>Don't forget me this weekend!</body>
+</note>

@@ -27,7 +27,7 @@ public class Main {
                     String extractedTag;
                     if (line.indexOf("<") != -1){
                         extractedTag = line.substring(line.indexOf("<"), line.indexOf(">") + 1);
-
+                        // Check if extracted tag is open tag
                         if (isOpenTag(extractedTag)){
                             if (!isValidTagName(getTagName(extractedTag))){
                                 result = "Invalid tag name. Error line: " + lr.getLineNumber();
@@ -43,7 +43,9 @@ public class Main {
                                 continue mainLoop;
                             }
 
-                        } else if (isEndTag(extractedTag)){
+                        }
+                        // Check if extracted tag is end tag
+                        else if (isEndTag(extractedTag)){
                             if (!isValidTagName(getTagName(extractedTag))){
                                 result = "Invalid tag name. Error line: " + lr.getLineNumber();
                                 break mainLoop;
@@ -63,6 +65,8 @@ public class Main {
                                 result = "Error: "  + lr.getLineNumber();
                                 break mainLoop;
                             }
+
+                        // Check if extracted tag is empty tag
                         } else if (isEmptyTag(extractedTag)){
                             if (!isValidTagName(getTagName(extractedTag))){
                                 result = "Invalid tag name. Error line: " + lr.getLineNumber();
@@ -77,6 +81,7 @@ public class Main {
                                 continue mainLoop;
                             }
                         }
+
                     } else {
                         line = lr.readLine();
                         continue ;
@@ -94,6 +99,7 @@ public class Main {
         }
     }
 
+    //Get the name of the tag
     private static String getTagName(String tag) {
         String tagName = "";
         if (isOpenTag(tag)){
